@@ -39,4 +39,3 @@ def call(String goToolName = 'go-1.14', String golangCiVersion = 'v1.17.1') {
             }
         }
     }
-}

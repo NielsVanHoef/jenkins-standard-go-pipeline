@@ -1,4 +1,4 @@
-def call(String goToolName = 'go-1.12', String golangCiVersion = 'v1.12.5') {
+def call(String goToolName = 'go-1.14', String golangCiVersion = 'v1.17.1') {
     pipeline {
         agent any
         tools {
@@ -32,8 +32,6 @@ def call(String goToolName = 'go-1.12', String golangCiVersion = 'v1.12.5') {
                 when {
                     buildingTag()
                 }
-                environment {
-                    GITHUB_TOKEN = credentials('GITHUB_TOKEN')
                 }
                 steps {
                     sh 'curl -sL https://git.io/goreleaser | bash'

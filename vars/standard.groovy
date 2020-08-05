@@ -1,41 +1,29 @@
 def call(String goToolName = 'go-1.14', String golangCiVersion = 'v1.17.1') {
     pipeline {
         agent any
-        tools {
-            go "$goToolName"
-        }
         environment {
-            GO111MODULE = 'on'
+            GO111MODULES = 'on' 
+        }
+        tools {
+            go '$goToolName'
         }
         stages {
-            stage('Compile') {
+            stage ('Build') {
                 steps {
                     sh 'go build'
                 }
             }
-            stage('Test') {
-                environment {
-                    CODECOV_TOKEN = credentials('CODECOV_TOKEN')
-                }
+            stage ('Test') {
                 steps {
                     sh 'go test ./... -coverprofile=coverage.txt'
-                    sh "curl -s https://codecov.io/bash | bash -s -"
                 }
             }
             stage('Code Analysis') {
                 steps {
-                    sh "curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s -- -b $GOPATH/bin $golangCiVersion"
+                    sh 'curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s -- -b $GOPATH/bin v1.17.1'
                     sh 'golangci-lint run'
                 }
-            }
-            stage('Release') {
-                when {
-                    buildingTag()
-                }
-                steps {
-                    sh 'curl -sL https://git.io/goreleaser | bash'
-                }
-            }
+            } 
         }
     }
 }
